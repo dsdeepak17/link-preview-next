@@ -1,8 +1,13 @@
 import { getLinkPreview } from 'link-preview-js';
 
 export default async function handler(req, res) {
-  const url = req.query.url;
-  const data = await getLinkPreview(url)
+  try {
+    const url = req.query.url;
+    const data = await getLinkPreview(url)
 
-  res.status(200).json({ ...data });
+    return res.status(200).json({ ...data });
+  } catch (err) {
+
+    return res.status(err.status || 500).json({ err });
+  }
 };
