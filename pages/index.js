@@ -1,8 +1,44 @@
+import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 
 export default function Home() {
+  const [linkData, setLinkData] = useState({ data: 'is empty right now', detail: 'will show when fetched' })
+  const [link, setLink] = useState('')
+  const [validLink, setValidLink] = useState('https://www.youtube.com/watch?v=MejbOFk7H6c')
+
+  const isValidUrl = urlString => {
+    var urlPattern = new RegExp('^(https?:\\/\\/)?' + // validate protocol
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // validate domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))' + // validate OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // validate port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?' + // validate query string
+      '(\\#[-a-z\\d_]*)?$', 'i'); // validate fragment locator
+    return !!urlPattern.test(urlString);
+  }
+
+  useEffect(() => {
+    const fetchLinkData = async () => {
+      const response = await fetch(`/api/getmetadata?url=${validLink}`);
+      const data = await response.json();
+      console.log(data);
+      setLinkData(data)
+    }
+
+    fetchLinkData()
+  }, [link])
+
+  const onLinkChange = (e) => {
+    const newLink = e.target.value;
+    if (!isValidUrl(newLink)) {
+      setLink(newLink); return;
+    }
+    setLink(newLink);
+    setValidLink(newLink);
+    console.log(newLink)
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -12,44 +48,16 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
+        <p>Showing data for: {validLink}</p>
+        <input value={link} type='text' onChange={onLinkChange} className={styles.input} />
+        {/* <pre>
+          <code className={styles.code}>
+            {JSON.stringify(linkData, null, 2)}
+          </code>
+        </pre> */}
+        <p>
+          {JSON.stringify(linkData, null, 2)}
         </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
       </main>
 
       <footer className={styles.footer}>

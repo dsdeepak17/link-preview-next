@@ -10,6 +10,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  overflow-wrap: break-word;
 }
 
 .footer {
@@ -63,6 +64,14 @@
   font-size: 1.1rem;
   font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
     Bitstream Vera Sans Mono, Courier New, monospace;
+    overflow-wrap: break-word;
+}
+
+.input{
+  width: 40rem;
+  height: 1.8rem;
+  padding: '5px 8px';
+  margin: '10px 20px'
 }
 
 .grid {
